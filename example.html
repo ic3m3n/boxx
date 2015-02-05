@@ -7,9 +7,9 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#button').on('click', function() {
+            // $('#button').on('click', function() {
                 $('#box').boxx();
-            });
+            // });
             
         });
     </script>
@@ -88,12 +88,50 @@
             outline: none;
         }
 
+        .list {
+            margin: 0;
+            padding: 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        .list--active {
+            
+        }
+
+        .list__item {
+            padding: 10px;
+            border-bottom: 1px solid #d9d9d9;
+            background: #fff;
+            list-style: none;
+            font-size: 16px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+
+        .list__item:last-child {
+            border: none;
+        }
+
+        .list__item:hover {
+            background: #35C4F2;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .list__item--active {
+            background: #35C4F2;
+            color: #fff;
+            border-color: #fff;   
+        }
+
+
     </style>
 </head>
 <body>
-    <div id="button">
+    <!-- <div id="button">
         press
-    </div>
+    </div> -->
     <div class="container">
         <input type="text" class="inputfield" id="box">
     </div>

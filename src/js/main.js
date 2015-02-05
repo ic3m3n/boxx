@@ -22,7 +22,9 @@
         this.options = options;
         this.container = document.createElement('div');
         this.inputBoxx = document.createElement('input');
+        this.dropdown = document.createElement('ul');
         this.tagTpl = '<div class="'+ this.options.prefix + this.options.stylers.tag +'"><span class="'+ this.options.prefix + this.options.stylers.tagLabel + '">{label}</span><span class="'+ this.options.prefix + this.options.stylers.tagClose + '">x</span></div>';
+        this.listItemTpl = '<li class="' + this.options.prefix + this.options.stylers.dropdownItem + '">{value}</li>';
 
         this.init();
     };
@@ -30,6 +32,11 @@
     Boxx.prototype.init = function() {
         this.createContainer(function() {
             this.bind();
+            if(this.options.enableDropdown) {
+                if(this.options.collection !== '') {
+                    this.createDropdown();
+                }
+            }
         }.bind(this));
     };
 
@@ -41,8 +48,7 @@
 
         $(this.container).attr('id', this.options.prefix + $(this.element).attr('id'));
         $(this.container).addClass(this.options.prefix + this.options.stylers.container);
-        $(this.container).append(template($(this.tagContainerTpl)));
-
+        
         $(this.element).after($(this.container));
         $(this.element).hide();
 
@@ -57,6 +63,20 @@
         $(this.container).append($(this.inputBoxx));
     };
 
+    Boxx.prototype.createDropdown = function() {
+        $(this.dropdown).css({
+            width: $(this.container).css('width'),
+            position: 'absolute',
+            left: 50 + '%',
+            transform: 'translateX(-' + 50 + '%)'
+        });
+
+        $(this.dropdown).addClass(this.options.prefix + this.options.stylers.dropdown);
+        $(this.container).after($(this.dropdown));
+
+        this.renderDropdown();
+    };
+
     Boxx.prototype.bind = function() {
         this.bindClicks();
         this.bindEvents();
@@ -66,6 +86,10 @@
     Boxx.prototype.bindClicks = function() {
         $(this.container).on('click', function() {
             $(this.inputBoxx).focus();
+            if(this.options.enableDropdown) {
+                $(this.dropdown).show();
+                $(this.dropdown).addClass(this.options.prefix + this.options.dropdownActive);
+            }
         }.bind(this));
     };
 
@@ -74,16 +98,16 @@
             this.renderTags();
         }.bind(this));
 
-
-        // ********************************************
-        // Input elment off focus triggern !!!!!!!!!!!!
-
-        // if(this.options.tagOn.blur) {
-        //     $(this.inputBoxx).on('blur', function() {
-        //         $(document).trigger('tag:changed');
-        //         $(document).trigger(this.options.events.created);
-        //     }.bind(this));
-        // }
+        $(this.inputBoxx).bind('blur');
+        $(this.inputBoxx).on('blur', function() {
+            if(this.options.tagOn.blur) {
+                this.addTag($(this.inputBoxx).val().toLowerCase());
+            }
+            if(this.options.enableDropdown) {
+                $(this.dropdown).hide();
+                $(this.dropdown).removeClass(this.options.prefix + this.options.dropdownActive);
+            }
+        }.bind(this));
     };
 
     Boxx.prototype.bindKeys = function() {
@@ -120,6 +144,13 @@
                         this.addTag($(this.inputBoxx).val().toLowerCase());
                         console.log('tab');
                     }
+                    break;
+
+                case this.key.escape:
+                    if(this.options.enableDropdown) {
+                        $(this.dropdown).slideUp();
+                    }
+                    $(this.inputBoxx).val('');
                     break;
                     
                 case this.key.backspace:
@@ -209,6 +240,15 @@
         }
     };
 
+    Boxx.prototype.renderDropdown = function() {
+        $.each($(this.options.collection), function(i, item) {
+            $(this.dropdown).append(template(this.listItemTpl, {
+                value: item
+            }));
+        }.bind(this));
+        $(this.dropdown).hide();
+    };
+
     // Interface für jQuery
     $.fn.boxx = function(_options) {
 
@@ -221,7 +261,11 @@
                 tagActive: 'tag--active',
                 tagLabel: 'tag__label',
                 tagClose: 'tag__close',
-                input: 'inputboxx'
+                input: 'inputboxx',
+                dropdown: 'list',
+                dropdownActive: 'list--active',
+                dropdownItem: 'list__item',
+                dropdownItemActive: 'list__item--active'
             },
             tagOn: {
                 space: true,
@@ -229,6 +273,7 @@
                 tab: true,
                 blur: true
             },
+            enableDropdown: true,
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
