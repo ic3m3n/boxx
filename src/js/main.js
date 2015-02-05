@@ -17,6 +17,8 @@
         };
 
         this.removeActive = false;
+        this.dropdownActive = false;
+        this.dropdownIndex = -1;
 
         this.element = _element;
         this.options = options;
@@ -24,7 +26,7 @@
         this.inputBoxx = document.createElement('input');
         this.dropdown = document.createElement('ul');
         this.tagTpl = '<div class="'+ this.options.prefix + this.options.stylers.tag +'"><span class="'+ this.options.prefix + this.options.stylers.tagLabel + '">{label}</span><span class="'+ this.options.prefix + this.options.stylers.tagClose + '">x</span></div>';
-        this.listItemTpl = '<li class="' + this.options.prefix + this.options.stylers.dropdownItem + '">{value}</li>';
+        this.listItemTpl = '<li id="{id}" class="' + this.options.prefix + this.options.stylers.dropdownItem + '">{value}</li>';
 
         this.init();
     };
@@ -75,6 +77,7 @@
         $(this.container).after($(this.dropdown));
 
         this.renderDropdown();
+        this.hideDropdown();
     };
 
     Boxx.prototype.bind = function() {
@@ -86,10 +89,11 @@
     Boxx.prototype.bindClicks = function() {
         $(this.container).on('click', function() {
             $(this.inputBoxx).focus();
-            if(this.options.enableDropdown) {
-                $(this.dropdown).show();
-                $(this.dropdown).addClass(this.options.prefix + this.options.dropdownActive);
-            }
+            this.showDropdown();
+        }.bind(this));
+
+        $(this.dropdown).on('click', 'li' ,function(e) {
+            this.addTag($(e.currentTarget).text());
         }.bind(this));
     };
 
@@ -103,10 +107,7 @@
             if(this.options.tagOn.blur) {
                 this.addTag($(this.inputBoxx).val().toLowerCase());
             }
-            if(this.options.enableDropdown) {
-                $(this.dropdown).hide();
-                $(this.dropdown).removeClass(this.options.prefix + this.options.dropdownActive);
-            }
+            // this.hideDropdown();
         }.bind(this));
     };
 
@@ -115,12 +116,16 @@
             e.stopPropagation();
             var keyCode = e.keyCode || e.which;
             switch (keyCode) {
-
                 case this.key.enter:
                     if(this.options.tagOn.enter) {
                         e.preventDefault();
                         this.addTag($(this.inputBoxx).val().toLowerCase());
                         console.log('enter');
+                    }
+                    if(this.options.enableDropdown) {
+                        if($('#' + this.dropdownIndex).attr('id') !== undefined) {
+                            this.addTag($('#' + this.dropdownIndex).text());
+                        }
                     }
                     break;
 
@@ -148,7 +153,7 @@
 
                 case this.key.escape:
                     if(this.options.enableDropdown) {
-                        $(this.dropdown).slideUp();
+                        this.hideDropdown();
                     }
                     $(this.inputBoxx).val('');
                     break;
@@ -165,6 +170,14 @@
                         this.removeActive = false;
                     }
                     console.log('backspace');
+                    break;
+
+                case this.key.up:
+                    this.listNext(--this.dropdownIndex);
+                    break;
+
+                case this.key.down:
+                    this.listNext(++this.dropdownIndex);
                     break;
                     
                 default:
@@ -241,12 +254,42 @@
     };
 
     Boxx.prototype.renderDropdown = function() {
-        $.each($(this.options.collection), function(i, item) {
+        $(this.dropdown).children('li').remove();
+
+        $.each($(this.options.collection), function(i, _text) {
             $(this.dropdown).append(template(this.listItemTpl, {
-                value: item
+                value: _text,
+                id: i
             }));
         }.bind(this));
-        $(this.dropdown).hide();
+    };
+
+    Boxx.prototype.showDropdown = function() {
+        if(this.options.enableDropdown) {
+            $(this.dropdown).show();
+            $(this.dropdown).addClass(this.options.prefix + this.options.stylers.dropdownActive);
+            this.dropdownActive = true;
+        }
+    };
+
+    Boxx.prototype.hideDropdown = function() {
+        if(this.options.enableDropdown) {
+            $(this.dropdown).hide();
+            $(this.dropdown).removeClass(this.options.prefix + this.options.stylers.dropdownActive);
+            this.dropdownActive = false;
+        }
+    };
+
+    Boxx.prototype.listNext = function(index) {
+        if(index < 0) {
+            this.dropdownIndex = 0;
+        } else if(index > $(this.dropdown).children('li').last().attr('id')) {
+            this.dropdownIndex = $(this.dropdown).children('li').last().attr('id');
+            return false;
+        } else {
+            $(this.dropdown).children('li').removeClass(this.options.prefix + this.options.stylers.dropdownItemActive);
+            $('#' + index).addClass(this.options.prefix + this.options.stylers.dropdownItemActive);
+        }
     };
 
     // Interface für jQuery
