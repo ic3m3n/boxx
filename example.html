@@ -7,7 +7,9 @@
 
     <script type="text/javascript">
         $(document).ready(function() {
-            $('#box').boxx();
+            $('#button').on('click', function() {
+                $('#box').boxx();
+            });
             
         });
     </script>
@@ -53,6 +55,11 @@
             border-radius: 3px;
         }
 
+        .tag--active {
+            border: 1px solid #35C4F2;
+            border-radius: 3px;
+        }
+
         .tag__label {
             display: inline-block;
             overflow: hidden;
@@ -84,6 +91,9 @@
     </style>
 </head>
 <body>
+    <div id="button">
+        press
+    </div>
     <div class="container">
         <input type="text" class="inputfield" id="box">
     </div>

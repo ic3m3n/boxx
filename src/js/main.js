@@ -58,19 +58,32 @@
     };
 
     Boxx.prototype.bind = function() {
+        this.bindClicks();
         this.bindEvents();
         this.bindKeys();
+    };
+
+    Boxx.prototype.bindClicks = function() {
+        $(this.container).on('click', function() {
+            $(this.inputBoxx).focus();
+        }.bind(this));
     };
 
     Boxx.prototype.bindEvents = function() {
         $(document).on('tag:changed', function() {
             this.renderTags();
         }.bind(this));
-        
-        $(document).on('boxx:filterbytag', function(e, val) {
-            console.log(val);
-        });
 
+
+        // ********************************************
+        // Input elment off focus triggern !!!!!!!!!!!!
+
+        // if(this.options.tagOn.blur) {
+        //     $(this.inputBoxx).on('blur', function() {
+        //         $(document).trigger('tag:changed');
+        //         $(document).trigger(this.options.events.created);
+        //     }.bind(this));
+        // }
     };
 
     Boxx.prototype.bindKeys = function() {
@@ -80,15 +93,19 @@
             switch (keyCode) {
 
                 case this.key.enter:
-                    e.preventDefault();
-                    this.addTag($(this.inputBoxx).val().toLowerCase());
-                    console.log('enter');
+                    if(this.options.tagOn.enter) {
+                        e.preventDefault();
+                        this.addTag($(this.inputBoxx).val().toLowerCase());
+                        console.log('enter');
+                    }
                     break;
 
                 case this.key.space:
-                    e.preventDefault();
-                    this.addTag($(this.inputBoxx).val().toLowerCase());
-                    console.log('space');
+                    if(this.options.tagOn.space) {
+                        e.preventDefault();
+                        this.addTag($(this.inputBoxx).val().toLowerCase());
+                        console.log('space');
+                    }
                     break;
 
                 case this.key.comma:
@@ -98,17 +115,23 @@
                     break;
 
                 case this.key.tab:
-                    e.preventDefault();
-                    this.addTag($(this.inputBoxx).val().toLowerCase());
-                    console.log('tab');
+                    if(this.options.tagOn.tab) {
+                        e.preventDefault();
+                        this.addTag($(this.inputBoxx).val().toLowerCase());
+                        console.log('tab');
+                    }
                     break;
                     
                 case this.key.backspace:
-                    if(this.removeActive) {
-                        this.removeTag();
-
+                    if($(this.inputBoxx).val() === '') {
+                        if(this.removeActive) {
+                            this.removeTag($(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last());
+                        } else {
+                            this.removeActive = !this.removeActive;
+                            $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last().addClass(this.options.prefix + this.options.stylers.tagActive);
+                        }
                     } else {
-                        this.removeActive = !this.removeActive;
+                        this.removeActive = false;
                     }
                     console.log('backspace');
                     break;
@@ -132,18 +155,22 @@
     };
 
     Boxx.prototype.removeTag = function(_element) {
-        var value = _element.children('.' + this.options.prefix + this.options.stylers.tagLabel).text(),
-            tagsBefore = $(this.element).val().split(','),
-            tagsAfter = [];
+        if($(this.element).val() !== '') {
+            var value = _element.children('.' + this.options.prefix + this.options.stylers.tagLabel).text(),
+                tagsBefore = $(this.element).val().split(','),
+                tagsAfter = [];
 
-        $.each(tagsBefore, function (i, tag) {
-            if (tag !== value && tag !== '') {
-                tagsAfter.push(tag);
-            }
-        });
+            $.each(tagsBefore, function (i, tag) {
+                if (tag !== value && tag !== '') {
+                    tagsAfter.push(tag);
+                }
+            });
 
-        $(this.element).val(tagsAfter.join(','));
-        this.renderTags();
+            this.removeActive = false;
+            $(this.element).val(tagsAfter.join(','));
+            $(document).trigger('tag:changed');
+            $(document).trigger(this.options.events.removed);
+        }
     };
 
     Boxx.prototype.hasTag = function(value) {
@@ -186,19 +213,27 @@
     $.fn.boxx = function(_options) {
 
         var defaults = {
+            collection: ['rot', 'grün', 'gelb', 'blau'],
             prefix: '',
             stylers: {
                 container: 'boxx',
                 tag: 'tag',
+                tagActive: 'tag--active',
                 tagLabel: 'tag__label',
                 tagClose: 'tag__close',
                 input: 'inputboxx'
+            },
+            tagOn: {
+                space: true,
+                enter: true,
+                tab: true,
+                blur: true
             },
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
                 removed: 'boxx:tag_removed',
-                filter: 'boxx:filterbytag'
+                filter: 'boxx:filter'
             }
         },
             options = $.extend({}, defaults, _options);
