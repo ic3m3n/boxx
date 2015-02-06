@@ -103,6 +103,7 @@
         $(document).on('tag:changed', function() {
             this.renderDropdown();
             this.renderTags();
+            this.dropdownIndex = -1;
         }.bind(this));
 
         if(this.options.tagOn.blur) {
@@ -122,35 +123,27 @@
                 case this.key.enter:
                     if(this.options.tagOn.enter) {
                         e.preventDefault();
-                        this.addTag($(this.inputBoxx).val().toLowerCase());
-                        console.log('enter');
-                    }
-                    if(this.options.enableDropdown) {
-                        if($('#' + this.dropdownIndex).attr('id') !== undefined) {
-                            this.addTag($('#' + this.dropdownIndex).text());
+                        if(this.options.enableDropdown) {
+                            if($('#' + this.dropdownIndex).attr('id') !== undefined) {
+                                this.addTag($('#' + this.dropdownIndex).text());
+                            } else {
+                                this.addTag($(this.inputBoxx).val().toLowerCase());
+                            }
+                        } else {
+                            this.addTag($(this.inputBoxx).val().toLowerCase());
                         }
-                    }
-                    break;
-
-                case this.key.space:
-                    if(this.options.tagOn.space) {
-                        e.preventDefault();
-                        this.addTag($(this.inputBoxx).val().toLowerCase());
-                        console.log('space');
                     }
                     break;
 
                 case this.key.comma:
                     e.preventDefault();
                     this.addTag($(this.inputBoxx).val().toLowerCase());
-                    console.log('comma');
                     break;
 
                 case this.key.tab:
                     if(this.options.tagOn.tab) {
                         e.preventDefault();
                         this.addTag($(this.inputBoxx).val().toLowerCase());
-                        console.log('tab');
                     }
                     break;
 
@@ -171,8 +164,8 @@
                         }
                     } else {
                         this.removeActive = false;
+                        this.renderDropdown();
                     }
-                    console.log('backspace');
                     break;
 
                 case this.key.up:
@@ -184,18 +177,43 @@
                     break;
                     
                 default:
-                    this.renderDropdown();
-                    console.log('default');
+                    if(this.options.enableAutocomplete) {
+                        this.renderDropdown();
+                    }
+                    if(this.options.openDropdownOnType) {
+                        this.showDropdown();
+                    }
                     break;
             }
         }.bind(this));
+        
+        $(this.inputBoxx).on('keydown', function(e) {
+            e.stopPropagation();
+            var keyCode = e.keyCode || e.which;
+            switch(keyCode) {
+                case this.key.space:
+                    if(this.options.tagOn.space) {
+                        e.preventDefault();
+                        if(this.options.enableDropdown) {
+                            if($('#' + this.dropdownIndex).attr('id') !== undefined) {
+                                this.addTag($('#' + this.dropdownIndex).text());
+                            } else {
+                                this.addTag($(this.inputBoxx).val().toLowerCase());
+                            }
+                        } else {
+                            this.addTag($(this.inputBoxx).val().toLowerCase());
+                        }
+                    }
+                    break;
+            }
+        }.bind(this));
+
     };
 
     Boxx.prototype.addTag = function(value) {
         if(value !== '') {
             if(!this.hasTag(value)) {
                 $(this.element).val($(this.element).val() + ($(this.element).val() !== '' ? ',' : '') + value);
-                console.log('tagAdded');
                 $(document).trigger('tag:changed');
                 $(document).trigger(this.options.events.created);
             }
@@ -244,7 +262,6 @@
                 $(this.inputBoxx).before(template(this.tagTpl, {
                     label: value
                 }));
-                console.log('tagRendered');
             }.bind(this));
             
             $('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagClose, function(e) {
@@ -269,8 +286,6 @@
                     id: i
                 }));
             }.bind(this));
-            console.log('dropdownRendered');
-
         }
     };
 
@@ -281,11 +296,21 @@
         $.each(this.options.collection, function(i, _i) {
             hasTag = 0;
 
-            $.each($(this.element).val().split(','), function(j, _j) {
-                if(_i !== _j) {
-                    hasTag++;
+            if($(this.inputBoxx).val() !== '' && $(this.inputBoxx).val().length >= this.options.openDropdownThreshold) {
+                if(_i.indexOf($(this.inputBoxx).val()) >= 0) {
+                    $.each($(this.element).val().split(','), function(j, _j) {
+                        if(_i !== _j) {
+                            hasTag++;
+                        }
+                    });
                 }
-            });
+            } else {
+                $.each($(this.element).val().split(','), function(j, _j) {
+                    if(_i !== _j) {
+                        hasTag++;
+                    }
+                });
+            }
 
             if(hasTag == $(this.element).val().split(',').length) {
                 filterArray.push(_i);         
@@ -342,16 +367,18 @@
                 dropdownItem: 'list__item',
                 dropdownItemActive: 'list__item--active'
             },
+            threshold: 1,
             tagOn: {
                 space: true,
                 enter: true,
                 tab: true,
-                blur: true
+                blur: false
             },
+            enableAutocomplete: true,
             enableDropdown: true,
             openDropdownOnType: true,
             openDropdownOnClick: true,
-            openDropdownTrashhold: 0,
+            openDropdownThreshold: 0,
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
