@@ -104,6 +104,7 @@
             this.renderDropdown();
             this.renderTags();
             this.dropdownIndex = -1;
+            this.removeActive = false;
         }.bind(this));
 
         if(this.options.tagOn.blur) {
@@ -153,20 +154,6 @@
                     }
                     $(this.inputBoxx).val('');
                     break;
-                    
-                case this.key.backspace:
-                    if($(this.inputBoxx).val() === '') {
-                        if(this.removeActive) {
-                            this.removeTag($(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last());
-                        } else {
-                            this.removeActive = !this.removeActive;
-                            $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last().addClass(this.options.prefix + this.options.stylers.tagActive);
-                        }
-                    } else {
-                        this.removeActive = false;
-                        this.renderDropdown();
-                    }
-                    break;
 
                 case this.key.up:
                     this.listNext(--this.dropdownIndex);
@@ -204,6 +191,24 @@
                             this.addTag($(this.inputBoxx).val().toLowerCase());
                         }
                     }
+                    break;
+                    
+                case this.key.backspace:
+                    if($(this.inputBoxx).val() === '') {
+                        if(this.removeActive) {
+                            this.removeTag($(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last());
+                        } else {
+                            this.removeActive = true;
+                            $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last().addClass(this.options.prefix + this.options.stylers.tagActive);
+                        }
+                    } else {
+                        this.removeActive = false;
+                        this.renderDropdown();
+                    }
+                    break;
+
+                default:
+                    $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).removeClass(this.options.prefix + this.options.stylers.tagActive);
                     break;
             }
         }.bind(this));
