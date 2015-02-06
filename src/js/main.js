@@ -356,6 +356,12 @@
         }
     };
 
+    Boxx.prototype.destroy = function() {
+        $(this.container).remove();
+        $(this.dropdown).remove();
+        $(this.element).show();
+    };
+
     // Interface für jQuery
     $.fn.boxx = function(_options) {
 
@@ -393,10 +399,20 @@
                 filter: 'boxx:filter'
             }
         },
-            options = $.extend({}, defaults, _options);
+            options = $.extend({}, defaults, _options),
+            parameters = arguments[0] !== undefined ? arguments : [{}];
         
         return this.each(function () {
-            var boxx = new Boxx($(this), options);
+            if (typeof(parameters[0]) === 'object') {
+                var boxx = new Boxx($(this), options);
+                $(this).data('boxx', boxx);
+            } else if (parameters[0] == 'refresh') {
+                $(this).data('boxx').refresh(parameters[1]);
+            } else if (parameters[0] == 'destroy') {
+                $(this).data('boxx').destroy();
+            } else {
+                $.error('Method ' + parameters[0] + ' does not exist in $.boxx');
+            }
         });
 
     };
