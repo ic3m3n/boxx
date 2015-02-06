@@ -89,7 +89,9 @@
     Boxx.prototype.bindClicks = function() {
         $(this.container).on('click', function() {
             $(this.inputBoxx).focus();
-            this.showDropdown();
+            if(this.options.openDropdownOnClick) {
+                this.showDropdown();
+            }
         }.bind(this));
 
         $(this.dropdown).on('click', 'li' ,function(e) {
@@ -99,20 +101,21 @@
 
     Boxx.prototype.bindEvents = function() {
         $(document).on('tag:changed', function() {
+            this.renderDropdown();
             this.renderTags();
         }.bind(this));
 
-        $(this.inputBoxx).bind('blur');
-        $(this.inputBoxx).on('blur', function() {
-            if(this.options.tagOn.blur) {
+        if(this.options.tagOn.blur) {
+            $(this.inputBoxx).bind('blur');
+            $(this.inputBoxx).on('blur', function() {
                 this.addTag($(this.inputBoxx).val().toLowerCase());
-            }
+            }.bind(this));
             // this.hideDropdown();
-        }.bind(this));
+        }
     };
 
     Boxx.prototype.bindKeys = function() {
-        $(this.inputBoxx).on('keydown', function(e) {
+        $(this.inputBoxx).on('keyup', function(e) {
             e.stopPropagation();
             var keyCode = e.keyCode || e.which;
             switch (keyCode) {
@@ -181,6 +184,7 @@
                     break;
                     
                 default:
+                    this.renderDropdown();
                     console.log('default');
                     break;
             }
@@ -191,6 +195,7 @@
         if(value !== '') {
             if(!this.hasTag(value)) {
                 $(this.element).val($(this.element).val() + ($(this.element).val() !== '' ? ',' : '') + value);
+                console.log('tagAdded');
                 $(document).trigger('tag:changed');
                 $(document).trigger(this.options.events.created);
             }
@@ -239,6 +244,7 @@
                 $(this.inputBoxx).before(template(this.tagTpl, {
                     label: value
                 }));
+                console.log('tagRendered');
             }.bind(this));
             
             $('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagClose, function(e) {
@@ -254,14 +260,40 @@
     };
 
     Boxx.prototype.renderDropdown = function() {
-        $(this.dropdown).children('li').remove();
+        if(this.options.enableDropdown) {
+            $(this.dropdown).children('li').remove();
 
-        $.each($(this.options.collection), function(i, _text) {
-            $(this.dropdown).append(template(this.listItemTpl, {
-                value: _text,
-                id: i
-            }));
+            $.each(this.filterDropdown(), function(i, _text) {
+                $(this.dropdown).append(template(this.listItemTpl, {
+                    value: _text,
+                    id: i
+                }));
+            }.bind(this));
+            console.log('dropdownRendered');
+
+        }
+    };
+
+    Boxx.prototype.filterDropdown = function() {
+        var filterArray = [],
+            hasTag = 0;
+
+        $.each(this.options.collection, function(i, _i) {
+            hasTag = 0;
+
+            $.each($(this.element).val().split(','), function(j, _j) {
+                if(_i !== _j) {
+                    hasTag++;
+                }
+            });
+
+            if(hasTag == $(this.element).val().split(',').length) {
+                filterArray.push(_i);         
+            }
+
         }.bind(this));
+
+        return filterArray;
     };
 
     Boxx.prototype.showDropdown = function() {
@@ -317,6 +349,9 @@
                 blur: true
             },
             enableDropdown: true,
+            openDropdownOnType: true,
+            openDropdownOnClick: true,
+            openDropdownTrashhold: 0,
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
