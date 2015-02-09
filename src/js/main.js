@@ -63,6 +63,7 @@
         $(this.inputBoxx).attr('placeholder', 'type something and hit enter');
 
         $(this.container).append($(this.inputBoxx));
+        this.renderTags();
     };
 
     Boxx.prototype.createDropdown = function() {
@@ -356,11 +357,17 @@
         }
     };
 
+    Boxx.prototype.refresh = function(array) {
+        this.options.collection = array;
+        this.renderDropdown();
+    };
+
     Boxx.prototype.destroy = function() {
         $(this.container).remove();
         $(this.dropdown).remove();
         $(this.element).show();
     };
+
 
     // Interface für jQuery
     $.fn.boxx = function(_options) {
