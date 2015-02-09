@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Example</title>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+    <script type="text/javascript" src="dist/boxx.js"></script>
+
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#button').on('click', function() {
+
+            $('#box').boxx();
+            });
+            
+        });
+    </script>
+
+    <style type="text/css">
+        .container {
+            width: 600px;
+            background: #ccc;
+            margin: 100px auto;
+            padding: 50px 0;
+        }
+
+        .inputfield {
+            width: 80%;
+            margin: 0 auto;
+            display: block;
+        }
+
+        .boxx {
+            min-height: 30px;
+            margin: 0 auto;
+            padding: 6px 12px 0 6px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            vertical-align: middle;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .tagboxx {
+            display: inline-block;
+        }
+
+        .tag {
+            height: 22px;
+            margin: -1px 5px 5px 0;
+            display: inline-block;
+            background-color: #ededed;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+        }
+
+        .tag--active {
+            border: 1px solid #35C4F2;
+            border-radius: 3px;
+        }
+
+        .tag__label {
+            display: inline-block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding-left: 4px;
+        }
+
+        .tag__close {
+            font-family: Arial;
+            display: inline-block;
+            line-height: 100%;
+            font-size: 1.1em;
+            line-height: 1.49em;
+            margin-left: 5px;
+            float: none;
+            height: 100%;
+            vertical-align: top;
+            padding-right: 4px;
+        }
+
+        .inputboxx {
+            min-width: 190px;
+            margin-top: 5px;
+            padding: 0;
+            font-size: 14px;
+            border: none;
+            outline: none;
+            vertical-align: super;
+        }
+
+        .list {
+            margin: 0;
+            padding: 0;
+            border: 1px solid #d9d9d9;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+
+        .list--active {
+
+        }
+
+        .list__item {
+            padding: 10px;
+            border-bottom: 1px solid #d9d9d9;
+            background: #fff;
+            list-style: none;
+            font-size: 16px;
+            font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+        }
+
+        .list__item:last-child {
+            border: none;
+        }
+
+        .list__item:hover {
+            background: #35C4F2;
+            color: #fff;
+            border-color: #fff;
+        }
+
+        .list__item--active {
+            background-color: #ededed;
+            color: #555;
+            border-color: #fff;   
+        }
+
+
+    </style>
+</head>
+<body>
+    <div id="button">
+        press
+    </div>
+    <div class="container">
+        <input type="text" class="inputfield" id="box">
+    </div>
+</body>
+</html>
+
+<script type="text/template">
+    <div class="tag">
+        <span class="tag__label">hello</span>
+        <span class="tag__close">x</span>
+    </div>
+</script>
