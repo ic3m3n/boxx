@@ -38,7 +38,8 @@ $('#inputBox').boxx({
         collection: ['rot', 'grün', 'gelb', 'blau'],        // an array of strings (["one","two","three"])
         prefix: '',                                         // CSS class prefix
         stylers: {                                          // CSS classes
-            container: 'boxx',                              // holder for the tags
+            container: 'boxx',                              // holder for tagboxx and dropdown
+            tagBoxx: 'tagboxx',                             // holder for the tags
             tag: 'tag',                                     // tag
             tagActive: 'tag--active',                       // active state for tag
             tagLabel: 'tag__label',                         // holder for the tagvalue
@@ -58,9 +59,10 @@ $('#inputBox').boxx({
         },
         enableAutocomplete: true,                   // autocomplete true or false
         enableDropdown: true,                       // visible dropdown
-        openDropdownOnType: true,                   // open dropdown when typing
-        openDropdownOnClick: true,                  // open dropdown when click on inputbox
+        openDropdownOnType: true,                   // opens dropdown when typing
+        openDropdownOnClick: true,                  // opens dropdown when clicking on inputbox
         openDropdownThreshold: 0,                   // minimum characters until autocomplete
+        closeDropdownOffClick: true,                // closes dropdown when clicking outside it 
         enableFilterEvent: true,                    // fires event when tag is selected
         events: {
             created: 'boxx:tag_created',
@@ -80,12 +82,15 @@ add your own styles or include mine from `example.html` or [view on CodePen](htt
 Method             | Description
 ------------------ | -----------
 refresh            | This method is used to manually refresh the plugin. A scenario where this would be useful is if the data in the original input box is changed by some other script.
+collection         | This method is used to manually replace the tagarray.
 destroy            | This method is used to remove the instance of the plugin from the input box and restore it to its original state.
 
 
 ###### Method usage
 ```javascript
-$('#inputBox').boxx('refresh', ['tag1','tag2','tag3']);
+$('#inputBox').boxx('refresh');
+
+$('#inputBox').boxx('collection', ['apple','peach','banana']);
 
 $('#inputBox').boxx('destroy');
 ```
@@ -94,11 +99,15 @@ $('#inputBox').boxx('destroy');
 
 ##Events
 --------
-the events are bind on `$(document)
+the events are bind on `$(document)`
 
 #####example:
 ```javascript
 $(document).on('boxx:tag_created', function() {
+    do something;
+});
+
+$(document).on('boxx:tag_removed', function() {
     do something;
 });
 

@@ -101,6 +101,16 @@
         $(this.dropdown).on('click', 'li' ,function(e) {
             this.addTag($(e.currentTarget).text());
         }.bind(this));
+
+        if(this.options.closeDropdownOffClick) {
+            $(document).mouseup(function(e) {
+                var container = $(this.container);
+
+                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                    this.hideDropdown();
+                }
+            }.bind(this));
+        }
     };
 
     Boxx.prototype.bindEvents = function() {
@@ -360,7 +370,12 @@
         }
     };
 
-    Boxx.prototype.refresh = function(array) {
+    Boxx.prototype.refresh = function() {
+        this.renderTags();
+        this.renderDropdown();
+    };
+
+    Boxx.prototype.collection = function(array) {
         this.options.collection = array;
         this.renderDropdown();
     };
@@ -403,6 +418,7 @@
             openDropdownOnType: true,
             openDropdownOnClick: true,
             openDropdownThreshold: 0,
+            closeDropdownOffClick: true,
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
@@ -418,7 +434,9 @@
                 var boxx = new Boxx($(this), options);
                 $(this).data('boxx', boxx);
             } else if (parameters[0] == 'refresh') {
-                $(this).data('boxx').refresh(parameters[1]);
+                $(this).data('boxx').refresh();
+            } else if (parameters[0] == 'collection') {
+                $(this).data('boxx').collection(parameters[1]);
             } else if (parameters[0] == 'destroy') {
                 $(this).data('boxx').destroy();
             } else {

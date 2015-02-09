@@ -1,3 +1,6 @@
+## 0.0.4
+- Merge 0.0.3 mit Masterbranch
+
 ## 0.0.3
 - Refresh Funktion
 - Schließen von Dropdown bei Klick auf anderes Element
