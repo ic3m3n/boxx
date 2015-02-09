@@ -101,6 +101,16 @@
         $(this.dropdown).on('click', 'li' ,function(e) {
             this.addTag($(e.currentTarget).text());
         }.bind(this));
+
+        if(this.options.closeDropdownOffClick) {
+            $(document).mouseup(function(e) {
+                var container = $(this.container);
+
+                if (!container.is(e.target) && container.has(e.target).length === 0) {
+                    this.hideDropdown();
+                }
+            }.bind(this));
+        }
     };
 
     Boxx.prototype.bindEvents = function() {
@@ -408,6 +418,7 @@
             openDropdownOnType: true,
             openDropdownOnClick: true,
             openDropdownThreshold: 0,
+            closeDropdownOffClick: true,
             enableFilterEvent: true,
             events: {
                 created: 'boxx:tag_created',
