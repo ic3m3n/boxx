@@ -38,7 +38,8 @@ $('#inputBox').boxx({
         collection: ['rot', 'grün', 'gelb', 'blau'],        // an array of strings (["one","two","three"])
         prefix: '',                                         // CSS class prefix
         stylers: {                                          // CSS classes
-            container: 'boxx',                              // holder for the tags
+            container: 'boxx',                              // holder for tagboxx and dropdown
+            tagBoxx: 'tagboxx',                             // holder for the tags
             tag: 'tag',                                     // tag
             tagActive: 'tag--active',                       // active state for tag
             tagLabel: 'tag__label',                         // holder for the tagvalue

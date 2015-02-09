@@ -360,7 +360,12 @@
         }
     };
 
-    Boxx.prototype.refresh = function(array) {
+    Boxx.prototype.refresh = function() {
+        this.renderTags();
+        this.renderDropdown();
+    };
+
+    Boxx.prototype.collection = function(array) {
         this.options.collection = array;
         this.renderDropdown();
     };
@@ -418,7 +423,9 @@
                 var boxx = new Boxx($(this), options);
                 $(this).data('boxx', boxx);
             } else if (parameters[0] == 'refresh') {
-                $(this).data('boxx').refresh(parameters[1]);
+                $(this).data('boxx').refresh();
+            } else if (parameters[0] == 'collection') {
+                $(this).data('boxx').collection(parameters[1]);
             } else if (parameters[0] == 'destroy') {
                 $(this).data('boxx').destroy();
             } else {
