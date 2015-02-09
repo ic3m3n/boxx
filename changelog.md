@@ -1,9 +1,13 @@
+## 0.0.3
+- Refresh Funktion
+- Schließen von Dropdown bei Klick auf anderes Element
+
 ## 0.0.2
-- umschließender Container
+- Umschließender Container
 
 ## 0.0.1
-- dist-files werden nicht mehr ignoriert
+- Dist-Files werden nicht mehr ignoriert
 - Semicolon vor das Script
 
 ## 0.0.0
-- init
+- Init
