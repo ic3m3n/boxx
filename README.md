@@ -75,6 +75,23 @@ add your own styles or include mine from `example.html` or [view on CodePen](htt
 <br><br>
 
 
+##jQuery Methods
+----------------
+Method             | Description
+------------------ | -----------
+refresh            | This method is used to manually refresh the plugin. A scenario where this would be useful is if the data in the original input box is changed by some other script.
+destroy            | This method is used to remove the instance of the plugin from the input box and restore it to its original state.
+
+
+###### Method usage
+```javascript
+$('#inputBox').boxx('refresh', ['tag1','tag2','tag3']);
+
+$('#inputBox').boxx('destroy');
+```
+<br><br>
+
+
 ##Events
 --------
 the events are bind on `$(document)
