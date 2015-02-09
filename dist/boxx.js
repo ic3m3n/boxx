@@ -1,4 +1,4 @@
-;(function ($) {
+(function ($) {
     "use strict";
 
     var Boxx = function(_element, options) {
