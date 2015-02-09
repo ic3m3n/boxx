@@ -23,6 +23,7 @@
         this.element = _element;
         this.options = options;
         this.container = document.createElement('div');
+        this.tagBoxx = document.createElement('div');
         this.inputBoxx = document.createElement('input');
         this.dropdown = document.createElement('ul');
         this.tagTpl = '<div class="'+ this.options.prefix + this.options.stylers.tag +'"><span class="'+ this.options.prefix + this.options.stylers.tagLabel + '">{label}</span><span class="'+ this.options.prefix + this.options.stylers.tagClose + '">x</span></div>';
@@ -42,16 +43,18 @@
         }.bind(this));
     };
 
-    Boxx.prototype.createContainer = function(callback) {        
+    Boxx.prototype.createContainer = function(callback) {
         $(this.container).css({
             width: $(this.element).css('width'),
             position: 'relative'
         });
-
-        $(this.container).attr('id', this.options.prefix + $(this.element).attr('id'));
         $(this.container).addClass(this.options.prefix + this.options.stylers.container);
-        
+        $(this.container).attr('id', this.options.prefix + $(this.element).attr('id'));
         $(this.element).after($(this.container));
+
+        $(this.tagBoxx).addClass(this.options.prefix + this.options.stylers.tagBoxx);
+        
+        $(this.container).append($(this.tagBoxx));
         $(this.element).hide();
 
         this.createInput();
@@ -62,20 +65,20 @@
         $(this.inputBoxx).addClass(this.options.prefix + this.options.stylers.input);
         $(this.inputBoxx).attr('placeholder', 'type something and hit enter');
 
-        $(this.container).append($(this.inputBoxx));
+        $(this.tagBoxx).append($(this.inputBoxx));
         this.renderTags();
     };
 
     Boxx.prototype.createDropdown = function() {
         $(this.dropdown).css({
-            width: $(this.container).css('width'),
+            width: $(this.tagBoxx).css('width'),
             position: 'absolute',
             left: 50 + '%',
             transform: 'translateX(-' + 50 + '%)'
         });
 
         $(this.dropdown).addClass(this.options.prefix + this.options.stylers.dropdown);
-        $(this.container).after($(this.dropdown));
+        $(this.tagBoxx).after($(this.dropdown));
 
         this.renderDropdown();
         this.hideDropdown();
@@ -88,7 +91,7 @@
     };
 
     Boxx.prototype.bindClicks = function() {
-        $(this.container).on('click', function() {
+        $(this.tagBoxx).on('click', function() {
             $(this.inputBoxx).focus();
             if(this.options.openDropdownOnClick) {
                 this.showDropdown();
@@ -196,10 +199,10 @@
                 case this.key.backspace:
                     if($(this.inputBoxx).val() === '') {
                         if(this.removeActive) {
-                            this.removeTag($(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last());
+                            this.removeTag($(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).last());
                         } else {
                             this.removeActive = true;
-                            $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).last().addClass(this.options.prefix + this.options.stylers.tagActive);
+                            $(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).last().addClass(this.options.prefix + this.options.stylers.tagActive);
                         }
                     } else {
                         this.removeActive = false;
@@ -208,7 +211,7 @@
                     break;
 
                 default:
-                    $(this.container).children('.' + this.options.prefix + this.options.stylers.tag).removeClass(this.options.prefix + this.options.stylers.tagActive);
+                    $(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).removeClass(this.options.prefix + this.options.stylers.tagActive);
                     break;
             }
         }.bind(this));
@@ -363,7 +366,7 @@
     };
 
     Boxx.prototype.destroy = function() {
-        $(this.container).remove();
+        $(this.tagBoxx).remove();
         $(this.dropdown).remove();
         $(this.element).show();
     };
@@ -377,6 +380,7 @@
             prefix: '',
             stylers: {
                 container: 'boxx',
+                tagBoxx: 'tagboxx',
                 tag: 'tag',
                 tagActive: 'tag--active',
                 tagLabel: 'tag__label',
