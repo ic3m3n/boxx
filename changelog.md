@@ -1,3 +1,7 @@
+## 0.0.6
+- Dropdown öffnet nicht, wenn Inhalt leer
+- ID Korrektur für Container
+
 ## 0.0.5
 - Bugfix von gegenseitigem Beeinflussen beim Rendern
 - Besser Arrownavigation über eigenes Attribut
