@@ -103,11 +103,11 @@ the events are bind on your container id
 
 #####example:
 ```javascript
-$('#boxx' + 'your container id').on('boxx:tag_created', function() {
+$('#' + 'your container id' + '-boxx').on('boxx:tag_created', function() {
     do something;
 });
 
-$('#boxx' + 'your container id').on('boxx:tag_removed', function() {
+$('#' + 'your container id' + '-boxx').on('boxx:tag_removed', function() {
     do something;
 });
 
