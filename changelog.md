@@ -1,3 +1,7 @@
+## 0.0.5
+- Bugfix von gegenseitigem Beeinflussen beim Rendern
+- Besser Arrownavigation über eigenes Attribut
+
 ## 0.0.4
 - Merge 0.0.3 mit Masterbranch
 
