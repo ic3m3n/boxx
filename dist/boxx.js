@@ -19,6 +19,7 @@
         this.removeActive = false;
         this.dropdownActive = false;
         this.dropdownIndex = -1;
+        this.activeTag = '';
 
         this.element = _element;
         this.options = options;
@@ -27,7 +28,7 @@
         this.inputBoxx = document.createElement('input');
         this.dropdown = document.createElement('ul');
         this.tagTpl = '<div class="'+ this.options.prefix + this.options.stylers.tag +'"><span class="'+ this.options.prefix + this.options.stylers.tagLabel + '">{label}</span><span class="'+ this.options.prefix + this.options.stylers.tagClose + '">x</span></div>';
-        this.listItemTpl = '<li id="{id}" class="' + this.options.prefix + this.options.stylers.dropdownItem + '">{value}</li>';
+        this.listItemTpl = '<li index="{data}" class="' + this.options.prefix + this.options.stylers.dropdownItem + '">{value}</li>';
 
         this.init();
     };
@@ -49,7 +50,7 @@
             position: 'relative'
         });
         $(this.container).addClass(this.options.prefix + this.options.stylers.container);
-        $(this.container).attr('id', this.options.prefix + $(this.element).attr('id'));
+        $(this.container).attr('id','boxx' + this.options.prefix + $(this.element).attr('id'));
         $(this.element).after($(this.container));
 
         $(this.tagBoxx).addClass(this.options.prefix + this.options.stylers.tagBoxx);
@@ -114,11 +115,12 @@
     };
 
     Boxx.prototype.bindEvents = function() {
-        $(document).on('tag:changed', function() {
+        $(this.container).on('tag:changed', function() {
             this.renderDropdown();
             this.renderTags();
             this.dropdownIndex = -1;
             this.removeActive = false;
+            this.activeTag = '';
         }.bind(this));
 
         if(this.options.tagOn.blur) {
@@ -138,8 +140,8 @@
                     if(this.options.tagOn.enter) {
                         e.preventDefault();
                         if(this.options.enableDropdown) {
-                            if($('#' + this.dropdownIndex).attr('id') !== undefined) {
-                                this.addTag($('#' + this.dropdownIndex).text());
+                            if(this.activeTag !== '') {
+                                this.addTag(this.activeTag);
                             } else {
                                 this.addTag($(this.inputBoxx).val().toLowerCase());
                             }
@@ -195,8 +197,8 @@
                     if(this.options.tagOn.space) {
                         e.preventDefault();
                         if(this.options.enableDropdown) {
-                            if($('#' + this.dropdownIndex).attr('id') !== undefined) {
-                                this.addTag($('#' + this.dropdownIndex).text());
+                            if(this.activeTag !== '') {
+                                this.addTag(this.activeTag);
                             } else {
                                 this.addTag($(this.inputBoxx).val().toLowerCase());
                             }
@@ -232,8 +234,8 @@
         if(value !== '') {
             if(!this.hasTag(value)) {
                 $(this.element).val($(this.element).val() + ($(this.element).val() !== '' ? ',' : '') + value);
-                $(document).trigger('tag:changed');
-                $(document).trigger(this.options.events.created);
+                $(this.container).trigger('tag:changed');
+                $(this.container).trigger(this.options.events.created);
             }
             $(this.inputBoxx).val('');
         }
@@ -253,8 +255,8 @@
 
             this.removeActive = false;
             $(this.element).val(tagsAfter.join(','));
-            $(document).trigger('tag:changed');
-            $(document).trigger(this.options.events.removed);
+            $(this.container).trigger('tag:changed');
+            $(this.container).trigger(this.options.events.removed);
         }
     };
 
@@ -271,7 +273,7 @@
     };
 
     Boxx.prototype.renderTags = function() {
-        $('.' + this.options.prefix + this.options.stylers.tag).remove();
+        $(this.tagBoxx).children('div').remove();
 
         var text = '';
         if($(this.element).val() !== '') {
@@ -287,7 +289,7 @@
             }.bind(this));
 
             if(this.options.enableFilterEvent) {
-                $('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagLabel, function(e) {
+                $(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagLabel, function(e) {
                     $(document).trigger(this.options.events.filter, $(e.currentTarget).text());
                 }.bind(this));
             }
@@ -301,7 +303,7 @@
             $.each(this.filterDropdown(), function(i, _text) {
                 $(this.dropdown).append(template(this.listItemTpl, {
                     value: _text,
-                    id: i
+                    data: i
                 }));
             }.bind(this));
         }
@@ -357,16 +359,29 @@
 
     Boxx.prototype.slide = function(index) {
         if(index < 0) {
+
             this.dropdownIndex = 0;
-        } else if(index > $(this.dropdown).children('li').last().attr('id')) {
-            this.dropdownIndex = $(this.dropdown).children('li').last().attr('id');
+
+        } else if(index > $(this.dropdown).children('li').last().attr('index')) {
+
+            this.dropdownIndex = $(this.dropdown).children('li').last().attr('index');
             return false;
+
         } else {
+
             $(this.dropdown).children('li').removeClass(this.options.prefix + this.options.stylers.dropdownItemActive);
-            $('#' + index).addClass(this.options.prefix + this.options.stylers.dropdownItemActive);
-            if(this.options.enableFilterEvent) {
-                $(document).trigger(this.options.events.filter, $('#' + index).text());
-            }
+            $.each($(this.dropdown).children('li'), function(i, child) {
+
+                if(parseInt($(child).attr('index')) === index) {
+                    $(child).addClass(this.options.prefix + this.options.stylers.dropdownItemActive);
+                    this.activeTag = $(child).text();
+
+                    if(this.options.enableFilterEvent) {
+                        $(document).trigger(this.options.events.filter, $(child).text());
+                    }
+                }
+
+            }.bind(this));
         }
     };
 
