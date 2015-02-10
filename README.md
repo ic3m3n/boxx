@@ -99,15 +99,15 @@ $('#inputBox').boxx('destroy');
 
 ##Events
 --------
-the events are bind on `$(document)`
+the events are bind on your container id
 
 #####example:
 ```javascript
-$(document).on('boxx:tag_created', function() {
+$('#boxx' + 'your container id').on('boxx:tag_created', function() {
     do something;
 });
 
-$(document).on('boxx:tag_removed', function() {
+$('#boxx' + 'your container id').on('boxx:tag_removed', function() {
     do something;
 });
 
@@ -122,15 +122,16 @@ $(document).on('boxx:filter', function(event, value) {
 ##DOM Structure
 ---------------
 
-* boxx:
-    * tag
-        * tagLabel
-        + tagClose
-    * tag...
-    * input
+* boxx
+    * tagboxx
+        * tag
+            * tagLabel
+            + tagClose
+        * tag...
+        * input
 
-* dropdown
-    * item...
+    * dropdown
+        * item...
 
 <br><br>
 
