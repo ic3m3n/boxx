@@ -290,7 +290,7 @@
 
             if(this.options.enableFilterEvent) {
                 $(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagLabel, function(e) {
-                    $(document).trigger(this.options.events.filter, $(e.currentTarget).text());
+                    $(this.container).trigger(this.options.events.filter, $(e.currentTarget).text());
                 }.bind(this));
             }
         }
