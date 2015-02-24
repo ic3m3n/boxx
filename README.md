@@ -111,7 +111,7 @@ $('#' + 'your container id' + '-boxx').on('boxx:tag_removed', function() {
     do something;
 });
 
-$(document).on('boxx:filter', function(event, value) {
+$('#' + 'your container id' + '-boxx').on('boxx:filter', function(event, value) {
     do something;
     this value = value of the filter tag;
 });
