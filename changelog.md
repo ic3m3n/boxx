@@ -1,4 +1,7 @@
 ## 0.0.6
+- Bind Filter Event an Boxx
+
+## 0.0.6
 - Dropdown öffnet nicht, wenn Inhalt leer
 - ID Korrektur für Container
 
