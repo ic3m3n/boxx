@@ -1,4 +1,7 @@
-## 0.0.6
+## 0.0.8
+- Build Datei
+
+## 0.0.7
 - Bind Filter Event an Boxx
 
 ## 0.0.6
