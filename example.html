@@ -9,9 +9,17 @@
         $(document).ready(function() {
 
             $('#button').on('click', function() {
-
-            $('#box').boxx();
+                $('.box').boxx();
             });
+
+            $('#button2').on('click', function() {
+                $.each($('.boxx'), function(i, item) {
+                    $(item).on('boxx:filter', function(event, value) {
+                        console.log(value);
+                    });
+                });
+            });
+
             
         });
     </script>
@@ -136,8 +144,15 @@
     <div id="button">
         press
     </div>
+    <div id="button2">
+        press
+    </div>
     <div class="container">
-        <input type="text" class="inputfield" id="box">
+        <input type="text" class="inputfield box">
+    </div>
+
+    <div class="container">
+        <input type="text" class="inputfield box">
     </div>
 </body>
 </html>

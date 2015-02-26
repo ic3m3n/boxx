@@ -50,7 +50,6 @@
             position: 'relative'
         });
         $(this.container).addClass(this.options.prefix + this.options.stylers.container);
-        $(this.container).attr('id', this.options.prefix + $(this.element).attr('id') + '-boxx');
         $(this.element).after($(this.container));
 
         $(this.tagBoxx).addClass(this.options.prefix + this.options.stylers.tagBoxx);
@@ -284,12 +283,12 @@
                 }));
             }.bind(this));
             
-            $('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagClose, function(e) {
+            $(this.tagBoxx).children('div').on('click', '.' + this.options.prefix + this.options.stylers.tagClose, function(e) {
                 this.removeTag($(e.currentTarget).closest('div'));
             }.bind(this));
 
             if(this.options.enableFilterEvent) {
-                $(this.tagBoxx).children('.' + this.options.prefix + this.options.stylers.tag).on('click', '.' + this.options.prefix + this.options.stylers.tagLabel, function(e) {
+                $(this.tagBoxx).children('div').on('click', '.' + this.options.prefix + this.options.stylers.tagLabel, function(e) {
                     $(this.container).trigger(this.options.events.filter, $(e.currentTarget).text());
                 }.bind(this));
             }
