@@ -50,6 +50,9 @@
             position: 'relative'
         });
         $(this.container).addClass(this.options.prefix + this.options.stylers.container);
+        if(this.options.addID) {
+            $(this.container).attr('id', this.options.prefix + $(this.element).attr('id') + '-boxx');
+        }
         $(this.element).after($(this.container));
 
         $(this.tagBoxx).addClass(this.options.prefix + this.options.stylers.tagBoxx);
@@ -429,6 +432,7 @@
                 tab: true,
                 blur: false
             },
+            addID: false,
             enableAutocomplete: true,
             enableDropdown: true,
             openDropdownOnType: true,
