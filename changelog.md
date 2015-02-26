@@ -1,3 +1,7 @@
+## 0.0.9
+- Container ohne ID
+- Tag nicht mehr Klassengebunden
+
 ## 0.0.8
 - Build Datei
 
