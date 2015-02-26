@@ -1,3 +1,6 @@
+## 0.0.10
+- Container ID optional
+
 ## 0.0.9
 - Container ohne ID
 - Tag nicht mehr Klassengebunden
