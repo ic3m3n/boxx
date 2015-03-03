@@ -66,7 +66,7 @@
 
     Boxx.prototype.createInput = function() {
         $(this.inputBoxx).addClass(this.options.prefix + this.options.stylers.input);
-        $(this.inputBoxx).attr('placeholder', 'type something and hit enter');
+        $(this.inputBoxx).attr('placeholder', this.options.placeholder);
 
         $(this.tagBoxx).append($(this.inputBoxx));
         this.renderTags();
@@ -412,6 +412,7 @@
         var defaults = {
             collection: ['rot', 'grün', 'gelb', 'blau'],
             prefix: '',
+            placeholder: 'tag it',
             stylers: {
                 container: 'boxx',
                 tagBoxx: 'tagboxx',
