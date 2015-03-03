@@ -37,6 +37,7 @@ $('#inputBox').boxx();
 $('#inputBox').boxx({
         collection: ['rot', 'grün', 'gelb', 'blau'],        // an array of strings (["one","two","three"])
         prefix: '',                                         // CSS class prefix
+        placeholder: 'tag it',                              // Placeholder
         stylers: {                                          // CSS classes
             container: 'boxx',                              // holder for tagboxx and dropdown
             tagBoxx: 'tagboxx',                             // holder for the tags
